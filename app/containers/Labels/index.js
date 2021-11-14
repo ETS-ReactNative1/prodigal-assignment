@@ -22,10 +22,9 @@ function Labels() {
       },
     })
       .then(res => res.json())
-      // eslint-disable-next-line
-      .then(({ data: { unique_label_list } }) => {
-        setLabels(unique_label_list);
-        setFilteredLabels(unique_label_list);
+      .then(({ data: { unique_label_list: uniqueLabelList } }) => {
+        setLabels(uniqueLabelList);
+        setFilteredLabels(uniqueLabelList);
       });
   }, []);
 
@@ -38,9 +37,8 @@ function Labels() {
     }).then(res => res.json());
 
   useEffect(() => {
-    // eslint-disable-next-line
-    fetchCallList().then(({ data: { call_data } }) => {
-      setCallList(call_data);
+    fetchCallList().then(({ data: { call_data: callData } }) => {
+      setCallList(callData);
     });
   }, []);
 
@@ -116,10 +114,9 @@ function Labels() {
       body: JSON.stringify(data),
     });
     const {
-      // eslint-disable-next-line
-      data: { call_data },
+      data: { call_data: callData },
     } = await fetchCallList();
-    setCallList(call_data);
+    setCallList(callData);
     setLoading(false);
   };
 
@@ -139,10 +136,9 @@ function Labels() {
       body: JSON.stringify(data),
     });
     const {
-      // eslint-disable-next-line
-      data: { call_data },
+      data: { call_data: callData },
     } = await fetchCallList();
-    setCallList(call_data);
+    setCallList(callData);
     setLoading(false);
   };
 
@@ -186,19 +182,19 @@ function Labels() {
             <div>
               <Checkbox
                 name={call.call_id.toString()}
-                // eslint-disable-next-line
-                onChange={handleChange.bind(null, call)}
+                onChange={e => handleChange(call, e)}
                 checked={getCheckedValue(call)}
               />
             </div>
             <div>{call.call_id}</div>
             <div className="label-call-tags">
               {call.label_id.map(label => (
-                // eslint-disable-next-line
                 <div
                   key={label}
                   className="label-call-tag"
-                  onClick={deleteTag.bind(null, call, label)}
+                  onClick={e => deleteTag(call, label, e)}
+                  role="button"
+                  tabIndex={0}
                 >
                   {label}{' '}
                   <span>
@@ -240,15 +236,13 @@ function Labels() {
               {label}{' '}
               <span>
                 <Button
-                  // eslint-disable-next-line
-                  onClick={handleLabelOperation.bind(null, label, 'add')}
+                  onClick={e => handleLabelOperation(label, 'add', e)}
                   type={getType(label, 'add')}
                 >
                   Add
                 </Button>{' '}
                 <Button
-                  // eslint-disable-next-line
-                  onClick={handleLabelOperation.bind(null, label, 'remove')}
+                  onClick={e => handleLabelOperation(label, 'remove', e)}
                   type={getType(label, 'remove')}
                 >
                   Remove

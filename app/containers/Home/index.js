@@ -88,10 +88,9 @@ export function Home() {
     if (order[field] === '' || order[field] === 'down') order[field] = 'up';
     else order[field] = 'down';
 
-    // eslint-disable-next-line
-    for (let key of Object.keys(order)) {
-      if (field !== key) order[key] = '';
-    }
+    Object.keys(order).forEach(key => {
+      if (key !== field) order[key] = '';
+    });
 
     if (field === 'agentId' && order[field] === 'up') data.sort(stringSortAsc);
     else if (field === 'agentId' && order[field] === 'down')
@@ -120,10 +119,11 @@ export function Home() {
           style={{ backgroundColor: 'lightblue', cursor: 'pointer' }}
           className="home-call"
         >
-          {/* eslint-disable-next-line */}
           <div
             className="home-call-header"
-            onClick={handleSort.bind(null, 'agentId')}
+            onClick={e => handleSort('agentId', e)}
+            role="button"
+            tabIndex={0}
           >
             <b>Agent ID</b>
             <div
@@ -136,10 +136,11 @@ export function Home() {
               <Caret direction={sortOrder.agentId} />
             </div>
           </div>
-          {/* eslint-disable-next-line */}
           <div
             className="home-call-header"
-            onClick={handleSort.bind(null, 'callId')}
+            onClick={e => handleSort('callId', e)}
+            role="button"
+            tabIndex={0}
           >
             <b>Call ID</b>
             <div
@@ -152,10 +153,11 @@ export function Home() {
               <Caret direction={sortOrder.callId} />
             </div>
           </div>
-          {/* eslint-disable-next-line */}
           <div
             className="home-call-header"
             onClick={handleSort.bind(null, 'callTime')}
+            role="button"
+            tabIndex={0}
           >
             <b>Call Time</b>
             <div
@@ -189,38 +191,34 @@ export function Home() {
     }
     if (type === 'select') setSelectedAgents(value);
     else if (type === 'slider') setCurrentDuration(value);
-    try {
-      const res = await fetch(
-        'https://damp-garden-93707.herokuapp.com/getfilteredcalls',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            info: {
-              filter_agent_list: type === 'select' ? value : selectedAgents,
-              filter_time_range:
-                type === 'slider'
-                  ? changeToActualTime(value)
-                  : changeToActualTime(currentDuration),
-            },
-          }),
-        },
-      );
-      if (!res.ok) throw new Error('Something went wrong');
-      const { data } = await res.json();
-      if (sortOrder.agentId === 'up') data.sort(stringSortAsc);
-      else if (sortOrder.agentId === 'down') data.sort(stringSortDesc);
-      else if (sortOrder.callId === 'up')
-        data.sort((a, b) => a.call_id - b.call_id);
-      else if (sortOrder.callId === 'down')
-        data.sort((a, b) => b.call_id - a.call_id);
-      else if (sortOrder.callTime === 'up')
-        data.sort((a, b) => a.call_time - b.call_time);
-      else if (sortOrder.callTime === 'down')
-        data.sort((a, b) => b.call_time - a.call_time);
-      setCallList(data);
-    } catch (err) {
-      console.error(err); //eslint-disable-line
-    }
+    const res = await fetch(
+      'https://damp-garden-93707.herokuapp.com/getfilteredcalls',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          info: {
+            filter_agent_list: type === 'select' ? value : selectedAgents,
+            filter_time_range:
+              type === 'slider'
+                ? changeToActualTime(value)
+                : changeToActualTime(currentDuration),
+          },
+        }),
+      },
+    );
+    if (!res.ok) throw new Error('Something went wrong');
+    const { data } = await res.json();
+    if (sortOrder.agentId === 'up') data.sort(stringSortAsc);
+    else if (sortOrder.agentId === 'down') data.sort(stringSortDesc);
+    else if (sortOrder.callId === 'up')
+      data.sort((a, b) => a.call_id - b.call_id);
+    else if (sortOrder.callId === 'down')
+      data.sort((a, b) => b.call_id - a.call_id);
+    else if (sortOrder.callTime === 'up')
+      data.sort((a, b) => a.call_time - b.call_time);
+    else if (sortOrder.callTime === 'down')
+      data.sort((a, b) => b.call_time - a.call_time);
+    setCallList(data);
   };
 
   if (!duration || !listOfAgents) return null;
@@ -234,8 +232,7 @@ export function Home() {
             allowClear
             style={{ width: '100%' }}
             placeholder="Please select agent(s)"
-            // eslint-disable-next-line
-            onChange={handleChange.bind(null, 'select')}
+            onChange={e => handleChange('select', e)}
           >
             {listOfAgents.map(agent => (
               <Option key={agent}>{agent}</Option>
@@ -248,8 +245,7 @@ export function Home() {
             range
             defaultValue={[0, 100]}
             tipFormatter={formatter}
-            // eslint-disable-next-line
-            onAfterChange={handleChange.bind(null, 'slider')}
+            onAfterChange={e => handleChange('slider', e)}
           />
         </div>
       </div>
