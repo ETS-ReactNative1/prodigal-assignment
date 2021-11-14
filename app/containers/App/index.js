@@ -12,12 +12,17 @@ import { Switch, Route } from 'react-router-dom';
 
 import Home from 'containers/Home/Loadable';
 
+import Labels from '../Labels';
+import './index.css';
+import Navbar from '../Navbar';
 
 export default function App() {
   return (
-    <div>
+    <div className="app-container">
+      <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path="/labels" component={Labels} />
       </Switch>
     </div>
   );

@@ -13,9 +13,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import { BrowserRouter } from 'react-router-dom';
+
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.css';
 // Import root app
 import App from 'containers/App';
 
@@ -25,11 +27,7 @@ import App from 'containers/App';
 /* eslint-disable import/no-unresolved, import/extensions */
 import '!file-loader?name=[name].[ext]!./images/favicon.png';
 import 'file-loader?name=.htaccess!./.htaccess';
-/* eslint-enable import/no-unresolved, import/extensions */
-
 import configureStore from './configureStore';
-
-// Import i18n messages
 import { translationMessages } from './i18n';
 
 // Create redux store with history
@@ -37,12 +35,14 @@ const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-const render = messages => {
+const render = () => {
   ReactDOM.render(
     <Provider store={store}>
-        <ConnectedRouter history={history}>
+      <ConnectedRouter history={history}>
+        <BrowserRouter>
           <App />
-        </ConnectedRouter>
+        </BrowserRouter>
+      </ConnectedRouter>
     </Provider>,
     MOUNT_NODE,
   );
